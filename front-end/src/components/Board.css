@@ -1,0 +1,43 @@
+
+.board {
+  display: grid;
+
+  grid-template-columns: repeat(10, 1fr);
+
+  grid-gap: 0px;
+
+  max-width: 60vmin;
+  /* justify-content: center; */
+  /* place-items: center; */
+}
+
+.row {
+
+}
+
+.cell {
+  border: 1px solid;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cell:hover {
+  background: rgba(216, 216, 18, 0.212);
+}
+
+.hidden {
+  background: rgba(14, 4, 19, 0.212);
+}
+
+.flagged {
+  background: rgba(14, 4, 19, 0.212);
+}
+
+.mine {
+  background: rgba(14, 4, 19, 0.212);
+}
+
+.number {
+  background: rgb(255, 255, 255);
+}
