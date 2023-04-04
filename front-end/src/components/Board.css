@@ -14,6 +14,7 @@
 .game-over {
   pointer-events: none;
   filter: blur(1px) grayscale(100%);
+  /* filter: blur(1px) hue-rotate(0deg); */
   opacity: 0.6
 }
 

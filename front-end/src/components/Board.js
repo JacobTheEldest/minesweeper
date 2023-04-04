@@ -1,11 +1,159 @@
 import './Board.css';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { BoardContext } from '../App.js';
 
-const Board = () => {
-
-  const { board, setBoard, gameRunning, setGameRunning } = useContext(BoardContext);
+const Board = ({global}) => {
+  const { gameId, attributeCount, setAttributeCount, gameResult, setGameResult } = useContext(BoardContext);
+  const [board, setBoard] = useState([]);
   const [moves, setMoves] = useState([]);
+
+  const randInRange = (min, max) => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min);
+  };
+
+  class cell {
+    constructor(row, col) {
+      this.row = row;
+      this.col = col;
+      this.flagged = false;
+      this.revealed = false;
+      this.mine = false;
+      this.neighbors = [];
+      this.adjacentMines = 0;
+    }
+
+    toggleFlagged = () => {
+      this.flagged = !this.flagged;
+    };
+
+    setRevealed = () => {
+      this.revealed = true;
+    };
+
+    setMined = () => {
+      this.mine = true;
+    };
+
+    queryNeighbors = (board) => {
+      // console.log('querying neighbors on board:', board);
+      const potentialRows = [this.row - 1, this.row, this.row + 1];
+      const potentialCols = [this.col - 1, this.col, this.col + 1];
+
+      const neighborRows = potentialRows.filter((row) => {
+        return row >= 0 && row < board.length;
+      });
+
+      const neighborCols = potentialCols.filter((col) => {
+        return col >= 0 && col < board[0].length;
+      });
+
+      neighborRows.forEach((row) => {
+        neighborCols.forEach((col) => {
+          if (!(col === this.col && row === this.row)) {
+            if (board[row][col].mine) {
+              this.adjacentMines++;
+            }
+            this.neighbors.push(board[row][col]);
+          }
+        });
+      });
+    };
+  }
+
+  const buildBoard = (rows = global.rows, cols = global.cols) => {
+    console.log('buildBoard - rows, cols:', rows, cols)
+    const emptyBoard = generateEmptyBoard(rows, cols);
+
+    const minedBoard = placeMines(rows, cols, global.mines, emptyBoard);
+
+    minedBoard.forEach((row) => {
+      row.forEach((cell) => {
+        cell.queryNeighbors(minedBoard);
+      });
+    });
+
+    setBoard(minedBoard);
+  };
+
+  const generateEmptyBoard = (rows = global.rows, cols = global.cols) => {
+    const grid = [];
+    for (let row = 0; row < rows; row++) {
+      const rowArray = [];
+      for (let col = 0; col < cols; col++) {
+        rowArray.push(new cell(row, col));
+      }
+      grid.push(rowArray);
+    }
+    return grid;
+  };
+
+  const placeMines = (
+    rows = global.rows,
+    cols = global.cols,
+    mines = global.mines,
+    board
+  ) => {
+    let updatedBoard = board;
+
+    console.log('placing mines');
+    console.log(
+      'board:',
+      updatedBoard.length,
+      'rows,',
+      updatedBoard[0].length,
+      'cols'
+    );
+
+    while (mines > 0) {
+      let randRow = randInRange(0, rows - 1);
+      let randCol = randInRange(0, cols - 1);
+
+      console.log('placing mine at:', randRow, randCol);
+      // mines--;
+      if (!updatedBoard[randRow][randCol].mine) {
+        updatedBoard[randRow][randCol].setMined();
+        mines--;
+      }
+    }
+
+    return updatedBoard;
+  };
+
+  const countAttributes = (board) => {
+    let flagged = 0;
+    let revealed = 0;
+
+    board.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell.flagged) {
+          flagged++;
+        }
+        if (cell.revealed) {
+          revealed++;
+        }
+      });
+    })
+
+    let hidden = board.length * board[0].length - revealed;
+
+    if (hidden === global.mines) {
+      setGameResult(1);
+    }
+
+    setAttributeCount({
+      flagged,
+      revealed,
+      hidden,
+    })
+  }
+
+
+  // Initial Setup
+  useEffect(() => {
+    buildBoard();
+  }, [gameId]);
 
   const cellDisplay = (cell) => {
     let cssClassString = 'cell';
@@ -41,16 +189,17 @@ const Board = () => {
     console.log('left click on:', cell);
     e.preventDefault();
 
-    if (!gameRunning) {
+    if (gameResult !== 0) {
       return;
     }
     
     if (!cell.flagged) {
       cell.setRevealed();
-    }
-    if (cell.mine) {
-      setGameRunning(false);
-    }
+      countAttributes(board);
+      if (cell.mine) {
+        setGameResult(-1);
+      }
+    } 
     
     setMoves([...moves, cell]);
   }
@@ -59,17 +208,18 @@ const Board = () => {
     console.log('right click on:', cell);
     e.preventDefault();
 
-    if (!gameRunning) {
+    if (gameResult !== 0) {
       return;
     }
     
-    cell.toggleFlagged(); 
+    cell.toggleFlagged();
+    countAttributes(board);
     
     setMoves([...moves, cell]);
   }
 
   let boardCSSClassString = 'board';
-  if (!gameRunning) {
+  if (gameResult !== 0) {
     boardCSSClassString += ' game-over';
   }
 

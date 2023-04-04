@@ -5,159 +5,61 @@ import { createContext, useEffect, useState } from 'react';
 
 export const BoardContext = createContext();
 
-// TODO: Check win condition (num not revealed == num mines)
-// TODO: Show count of mines not flagged
 // TODO: When a 0 is revealed, reveal neighbors
-// TODO: Move all board logic to board component (context unnecessary?)
-
+// TODO: Make game size and mine count adjustable
 
 function App() {
-  const [board, setBoard] = useState([]);
   const [gameId, setGameId] = useState(1);
-  const [gameRunning, setGameRunning] = useState(true);
+  const [attributeCount, setAttributeCount] = useState({
+    revealed: 0,
+    flagged: 0,
+    hidden: 0,
+  });
+  const [gameResult, setGameResult] = useState(0);
 
-  const globalRows = 10;
-  const globalCols = 10;
-  const globalMines = 10;
-
-  const randInRange = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min);
+  const global = {
+    rows: 10,
+    cols: 10,
+    mines: 10,
   };
-
-  class cell {
-    constructor(row, col) {
-      this.row = row;
-      this.col = col;
-      this.flagged = false;
-      this.revealed = false;
-      this.mine = false;
-      this.neighbors = [];
-      this.adjacentMines = 0;
-    }
-
-    toggleFlagged = () => {
-      this.flagged = !this.flagged;
-    };
-
-    setRevealed = () => {
-      this.revealed = true;
-    };
-
-    setMined = () => {
-      this.mine = true;
-    };
-
-    queryNeighbors = (board) => {
-      console.log('querying neighbors on board:', board);
-      const potentialRows = [this.row - 1, this.row, this.row + 1];
-      const potentialCols = [this.col - 1, this.col, this.col + 1];
-
-      const neighborRows = potentialRows.filter((row) => {
-        return row >= 0 && row < board.length;
-      });
-
-      const neighborCols = potentialCols.filter((col) => {
-        return col >= 0 && col < board[0].length;
-      });
-
-      console.log({ neighborRows, neighborCols });
-
-      neighborRows.forEach((row) => {
-        neighborCols.forEach((col) => {
-          if (!(col === this.col && row === this.row)) {
-            if (board[row][col].mine) {
-              this.adjacentMines++;
-            }
-            this.neighbors.push(board[row][col]);
-          }
-        });
-      });
-    };
-  }
-
-  const buildBoard = (rows = globalRows, cols = globalCols) => {
-    const emptyBoard = generateEmptyBoard(rows, cols);
-
-    const minedBoard = placeMines(rows, cols, globalMines, emptyBoard);
-
-    minedBoard.forEach((row) => {
-      row.forEach((cell) => {
-        cell.queryNeighbors(minedBoard);
-      });
-    });
-
-    setBoard(minedBoard);
-  };
-
-  const generateEmptyBoard = (rows = globalRows, cols = globalCols) => {
-    const grid = [];
-    for (let row = 0; row < rows; row++) {
-      const rowArray = [];
-      for (let col = 0; col < cols; col++) {
-        rowArray.push(new cell(row, col));
-      }
-      grid.push(rowArray);
-    }
-    return grid;
-  };
-
-  const placeMines = (
-    rows = globalRows,
-    cols = globalCols,
-    mines = globalMines,
-    board
-  ) => {
-    let updatedBoard = board;
-
-    console.log('placing mines');
-    console.log(
-      'board:',
-      updatedBoard.length,
-      'rows,',
-      updatedBoard[0].length,
-      'cols'
-    );
-
-    while (mines > 0) {
-      let randRow = randInRange(0, rows - 1);
-      let randCol = randInRange(0, cols - 1);
-
-      console.log('placing mine at:', randRow, randCol);
-      // mines--;
-      if (!updatedBoard[randRow][randCol].mine) {
-        updatedBoard[randRow][randCol].setMined();
-        mines--;
-      }
-    }
-
-    return updatedBoard;
-  };
-
-  // Initial Setup
-  useEffect(() => {
-    buildBoard();
-  }, [gameId]);
 
   const handleGameRestartClick = () => {
-    setGameRunning(true);
+    setGameResult(0);
     setGameId(gameId + 1);
+    setAttributeCount({
+      revealed: 0,
+      flagged: 0,
+      hidden: 0,
+    });
+  };
+
+  let endMessage = '';
+  if (gameResult === -1) {
+    endMessage = 'You Lost!';
+  } else if (gameResult === 1) {
+    endMessage = 'You Won!';
   }
 
   return (
-    <BoardContext.Provider value={{ board, setBoard, gameRunning, setGameRunning }}>
+    <BoardContext.Provider
+      value={{ gameId, attributeCount, setAttributeCount, gameResult, setGameResult }}
+    >
       <div className="">
         <h1>Minesweeper</h1>
         Game ID: {gameId}
         <br />
-        {!gameRunning ? (
+        Remaining Mines:{' '}
+        {global.mines - attributeCount.flagged >= 0
+          ? global.mines - attributeCount.flagged
+          : 0}
+        <br />
+        <span className="game-result">{endMessage}</span>
+        {gameResult !== 0 ? (
           <button onClick={handleGameRestartClick}>Restart</button>
-        ): null}
+        ) : null}
         <br />
-        <Board />
+        <Board global={global} />
         <br />
-        After Board:
         {/* <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
