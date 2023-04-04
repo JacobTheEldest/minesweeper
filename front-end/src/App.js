@@ -49,7 +49,7 @@ function App() {
         <h1>Minesweeper</h1>
         Game ID: {gameId}
         <br />
-        Remaining Mines:{' '}
+        Remaining Unflagged Mines:{' '}
         {global.mines - attributeCount.flagged >= 0
           ? global.mines - attributeCount.flagged
           : 0}
