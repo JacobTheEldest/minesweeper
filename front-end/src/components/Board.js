@@ -74,6 +74,7 @@ const Board = ({ global }) => {
 
     const minedBoard = placeMines(rows, cols, global.mines, emptyBoard);
 
+    // iterate over each cell
     minedBoard.forEach((row) => {
       row.forEach((cell) => {
         cell.queryNeighbors(minedBoard);
