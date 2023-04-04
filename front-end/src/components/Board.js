@@ -2,8 +2,14 @@ import './Board.css';
 import { useContext, useState, useEffect } from 'react';
 import { BoardContext } from '../App.js';
 
-const Board = ({global}) => {
-  const { gameId, attributeCount, setAttributeCount, gameResult, setGameResult } = useContext(BoardContext);
+const Board = ({ global }) => {
+  const {
+    gameId,
+    attributeCount,
+    setAttributeCount,
+    gameResult,
+    setGameResult,
+  } = useContext(BoardContext);
   const [board, setBoard] = useState([]);
   const [moves, setMoves] = useState([]);
 
@@ -63,7 +69,7 @@ const Board = ({global}) => {
   }
 
   const buildBoard = (rows = global.rows, cols = global.cols) => {
-    console.log('buildBoard - rows, cols:', rows, cols)
+    console.log('buildBoard - rows, cols:', rows, cols);
     const emptyBoard = generateEmptyBoard(rows, cols);
 
     const minedBoard = placeMines(rows, cols, global.mines, emptyBoard);
@@ -134,7 +140,7 @@ const Board = ({global}) => {
           revealed++;
         }
       });
-    })
+    });
 
     let hidden = board.length * board[0].length - revealed;
 
@@ -146,9 +152,36 @@ const Board = ({global}) => {
       flagged,
       revealed,
       hidden,
-    })
-  }
+    });
+  };
 
+  const revealCells = (cell) => {
+    if (cell.adjacentMines !== 0) {
+      cell.setRevealed();
+      return;
+    }
+
+    const getConnectedZeroes = (cell, connectedZeroes, cellsToReveal) => {
+      cell.neighbors.forEach((neighbor) => {
+        cellsToReveal.add(neighbor);
+        if (
+          !connectedZeroes.has(neighbor) &&
+          !neighbor.revealed &&
+          neighbor.adjacentMines === 0
+        ) {
+          connectedZeroes.add(neighbor);
+          getConnectedZeroes(neighbor, connectedZeroes, cellsToReveal);
+        }
+      });
+    };
+    
+    const connectedZeroes = new Set([cell]);
+    const cellsToReveal = new Set([cell]);
+    getConnectedZeroes(cell, connectedZeroes, cellsToReveal);
+    cellsToReveal.forEach((cell) => {
+      cell.setRevealed();
+    })
+  };
 
   // Initial Setup
   useEffect(() => {
@@ -192,18 +225,18 @@ const Board = ({global}) => {
     if (gameResult !== 0) {
       return;
     }
-    
+
     if (!cell.flagged) {
-      cell.setRevealed();
+      revealCells(cell);
       countAttributes(board);
       if (cell.mine) {
         setGameResult(-1);
       }
-    } 
-    
+    }
+
     setMoves([...moves, cell]);
-  }
-  
+  };
+
   const handleRightClick = (e, cell) => {
     console.log('right click on:', cell);
     e.preventDefault();
@@ -211,12 +244,12 @@ const Board = ({global}) => {
     if (gameResult !== 0) {
       return;
     }
-    
+
     cell.toggleFlagged();
     countAttributes(board);
-    
+
     setMoves([...moves, cell]);
-  }
+  };
 
   let boardCSSClassString = 'board';
   if (gameResult !== 0) {
@@ -228,7 +261,7 @@ const Board = ({global}) => {
       {board.map((row, rowNum) => {
         return (
           <div className="row" key={rowNum}>
-            {row.map((cell) => { 
+            {row.map((cell) => {
               return cellDisplay(cell);
             })}
           </div>

@@ -5,8 +5,9 @@ import { createContext, useEffect, useState } from 'react';
 
 export const BoardContext = createContext();
 
-// TODO: When a 0 is revealed, reveal neighbors
 // TODO: Make game size and mine count adjustable
+// TODO: On loss, tint board red; on win, tint board green
+// TODO: General styling, center board, etc.
 
 function App() {
   const [gameId, setGameId] = useState(1);
