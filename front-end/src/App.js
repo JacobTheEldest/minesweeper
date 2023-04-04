@@ -1,11 +1,10 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import Board from './components/Board';
 import { createContext, useEffect, useState } from 'react';
 
 export const BoardContext = createContext();
 
-// TODO: Check lose condition (mine revealed)
 // TODO: Check win condition (num not revealed == num mines)
 // TODO: Show count of mines not flagged
 // TODO: When a 0 is revealed, reveal neighbors
@@ -14,6 +13,8 @@ export const BoardContext = createContext();
 
 function App() {
   const [board, setBoard] = useState([]);
+  const [gameId, setGameId] = useState(1);
+  const [gameRunning, setGameRunning] = useState(true);
 
   const globalRows = 10;
   const globalCols = 10;
@@ -137,13 +138,22 @@ function App() {
   // Initial Setup
   useEffect(() => {
     buildBoard();
-  }, []);
+  }, [gameId]);
+
+  const handleGameRestartClick = () => {
+    setGameRunning(true);
+    setGameId(gameId + 1);
+  }
 
   return (
-    <BoardContext.Provider value={{ board, setBoard }}>
+    <BoardContext.Provider value={{ board, setBoard, gameRunning, setGameRunning }}>
       <div className="">
         <h1>Minesweeper</h1>
-        Board:
+        Game ID: {gameId}
+        <br />
+        {!gameRunning ? (
+          <button onClick={handleGameRestartClick}>Restart</button>
+        ): null}
         <br />
         <Board />
         <br />

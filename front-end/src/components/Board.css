@@ -11,6 +11,12 @@
   /* place-items: center; */
 }
 
+.game-over {
+  pointer-events: none;
+  filter: blur(1px) grayscale(100%);
+  opacity: 0.6
+}
+
 .row {
 
 }
@@ -23,21 +29,21 @@
   align-items: center;
 }
 .cell:hover {
-  background: rgba(216, 216, 18, 0.212);
+  background: lightcoral;
 }
 
 .hidden {
-  background: rgba(14, 4, 19, 0.212);
+  background: gray;
 }
 
 .flagged {
-  background: rgba(14, 4, 19, 0.212);
+  background: gray;
 }
 
 .mine {
-  background: rgba(14, 4, 19, 0.212);
+  background: gray;
 }
 
 .number {
-  background: rgb(255, 255, 255);
+  background: cornsilk;
 }

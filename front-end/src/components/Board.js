@@ -4,7 +4,7 @@ import { BoardContext } from '../App.js';
 
 const Board = () => {
 
-  const { board, setBoard } = useContext(BoardContext);
+  const { board, setBoard, gameRunning, setGameRunning } = useContext(BoardContext);
   const [moves, setMoves] = useState([]);
 
   const cellDisplay = (cell) => {
@@ -40,9 +40,16 @@ const Board = () => {
   const handleLeftClick = (e, cell) => {
     console.log('left click on:', cell);
     e.preventDefault();
+
+    if (!gameRunning) {
+      return;
+    }
     
     if (!cell.flagged) {
       cell.setRevealed();
+    }
+    if (cell.mine) {
+      setGameRunning(false);
     }
     
     setMoves([...moves, cell]);
@@ -51,14 +58,23 @@ const Board = () => {
   const handleRightClick = (e, cell) => {
     console.log('right click on:', cell);
     e.preventDefault();
+
+    if (!gameRunning) {
+      return;
+    }
     
     cell.toggleFlagged(); 
     
     setMoves([...moves, cell]);
   }
 
+  let boardCSSClassString = 'board';
+  if (!gameRunning) {
+    boardCSSClassString += ' game-over';
+  }
+
   return (
-    <div className="board">
+    <div className={boardCSSClassString}>
       {board.map((row, rowNum) => {
         return (
           <div className="row" key={rowNum}>
