@@ -1,70 +1,70 @@
-# minesweeper
+# Getting Started with Create React App
 
-Basic Requirements
-------------------
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Create a full-stack implementation of [Minesweeper  ](https://en.wikipedia.org/wiki/Minesweeper_(video_game)). The basic requirements are:
+## Available Scripts
 
--   Use React for all the components
--   Write `jest` tests to verify your gameplay logic and presentation logic. Achieve 80% test coverage.
--   Style your game using any CSS and/or styling frameworks ie: MaterialUI, BootStrap....)
+In the project directory, you can run:
 
-Reminder: emphasis should be placed on creating well-defined interfaces, writing code with a clear separation of concerns, and using the principles of modularity, encapsulation, abstraction.
+### `npm start`
 
-### Starting a game:
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
--   Default board size is 10x10
--   Place 10 hidden mines randomly on the board
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-### Gameplay Rules
+### `npm test`
 
-On each turn, the user clicks on a square to uncover it. If the square:
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
--   Contains a mine, the user loses, and the game is over!
--   Is adjacent to a mine, the square displays the total number of mines in the 8 squares around it.
--   Is not adjacent to a mine, the square is blank and should behave as if the 8 adjacent squares were also clicked. For each of those squares, their neighboring squares continue to be revealed in each direction (i.e., this step is applied recursively to all neighboring squares) until the edge of the board is reached or until a square is reached that is adjacent to a mine, in which case the previous rule applies.
+### `npm run build`
 
-The last rule winds up uncovering large areas of the board in one turn. This helps speed up gameplay. The user wins when they uncover all squares that don't have mines.
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-### Setup:
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
--   Create an empty git repository with a client and server directory.
--   Link this repository to a new repository on GitHub as your remote.
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### Submitting the project:
+### `npm run eject`
 
-1.  Submit a link to your repository below.
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-#### Level 1
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
--   Establish a react front-end minesweeper game board with in-memory game data.
--   Establish basic game logic that enforces the above game rules on a 10x10 board.
-    -   Each cell is an object that stores pertinent information for that cell (ie. wasClicked, isBomb, adjacentBombCount...)
-    -   One way to store these values to keep track of position is an [adjacency matrix  ](https://en.wikipedia.org/wiki/Adjacency_matrix#:~:text=In%20graph%20theory%20and%20computer,with%20zeros%20on%20its%20diagonal).
-    -   One could also have a property pointing to adjacent cells directly on the cell object.
-    -   If you are stuck on the game logic, be sure to ask for assistance. You should not be struggling for too long on this section.
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-#### Level 2
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
--   Add the ability to change the difficulty (size of the board and quantity of mines).
--   Add a timer to the game.
--   View a list of recently played user times and difficulty setting.
+## Learn More
 
-#### Level 3
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
--   Define a RESTful API that connects to a postgres database.
--   Create a login page that takes in a username (no authentication required).
--   Database should store each user, their top time, and the game's difficulty setting.
--   Refactor the frontend to persist and retrieve data to the API.
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-#### Level 4
+### Code Splitting
 
--   Establish the ability to undo and redo moves
--   Establish game logic that increases the duration of the game by 10 seconds for each time the undo/redo feature is used.
--   Create a user page that shows all times and difficulties for a given user.
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-#### Level 5
+### Analyzing the Bundle Size
 
--   Establish the ability to close the browser and reload the previously played game.
--   Establish the ability to click on a previously completed game and click through the moves that were made.
--   Deploy to Heroku.
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
