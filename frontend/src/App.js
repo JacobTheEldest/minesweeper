@@ -43,7 +43,13 @@ function App() {
 
   return (
     <BoardContext.Provider
-      value={{ gameId, attributeCount, setAttributeCount, gameResult, setGameResult }}
+      value={{
+        gameId,
+        attributeCount,
+        setAttributeCount,
+        gameResult,
+        setGameResult,
+      }}
     >
       <div className="">
         <h1>Minesweeper</h1>

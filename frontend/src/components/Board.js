@@ -175,13 +175,13 @@ const Board = ({ global }) => {
         }
       });
     };
-    
+
     const connectedZeroes = new Set([cell]);
     const cellsToReveal = new Set([cell]);
     getConnectedZeroes(cell, connectedZeroes, cellsToReveal);
     cellsToReveal.forEach((cell) => {
       cell.setRevealed();
-    })
+    });
   };
 
   // Initial Setup
