@@ -6,8 +6,10 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "airbnb",
-    "prettier"
+    // "airbnb",
+    "prettier",
+    "react-app",
+    "react-app/jest"
   ],
   "overrides": [],
   "parserOptions": {
@@ -16,6 +18,8 @@
   },
   "plugins": ["react", "prettier"],
   "rules": {
-    "prettier/prettier": ["error"]
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off"
   }
 }

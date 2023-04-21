@@ -1,6 +1,6 @@
 // import logo from './logo.svg';
 import './App.css';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import Board from './components/Board';
 
 export const BoardContext = createContext();
