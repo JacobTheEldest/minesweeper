@@ -3,13 +3,8 @@ import { useContext, useState, useEffect } from 'react';
 import { BoardContext } from '../App.js';
 
 const Board = ({ global }) => {
-  const {
-    gameId,
-    attributeCount,
-    setAttributeCount,
-    gameResult,
-    setGameResult,
-  } = useContext(BoardContext);
+  const { gameId, setAttributeCount, gameResult, setGameResult } =
+    useContext(BoardContext);
   const [board, setBoard] = useState([]);
   const [moves, setMoves] = useState([]);
 
@@ -187,6 +182,7 @@ const Board = ({ global }) => {
   // Initial Setup
   useEffect(() => {
     buildBoard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameId]);
 
   const cellDisplay = (cell) => {
