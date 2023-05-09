@@ -1,25 +1,16 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2022": true,
+    "node": true,
+    "jest": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    // "airbnb",
-    "prettier",
-    "react-app",
-    "react-app/jest"
-  ],
-  "overrides": [],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "prettier"],
-  "rules": {
-    "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off"
-  }
+  "extends": ["eslint:recommended", "prettier", "react-app", "react-app/jest"],
+  "plugins": [],
+  "overrides": [],
+  "rules": {}
 }
