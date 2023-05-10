@@ -1,6 +1,6 @@
 {
   "name": "front-end",
-  "version": "0.0.0 - updated by semantic-release",
+  "version": "0.0.0-updated-by-semantic-release",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
