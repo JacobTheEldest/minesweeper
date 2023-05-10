@@ -14,6 +14,7 @@
   "scripts": {
     "format": "prettier --check ./src",
     "lint": "eslint ./src",
+    "commit": "cz",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -34,10 +35,16 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",
     "@commitlint/config-conventional": "^17.6.3",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-react-app": "^7.0.1",
     "husky": "^8.0.3",
     "prettier": "^2.8.7"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
