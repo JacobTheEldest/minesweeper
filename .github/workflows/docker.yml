@@ -1,4 +1,4 @@
-name: Build Docker Image and Publish to Registries
+name: Build Docker Images and Publish to Registries
 
 on:
   release:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   build-and-publish:
+    name: Build Docker Images and Publish to Registries
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -23,7 +24,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ env.DOCKER_HUB_REPO }}
+            ${{ vars.DOCKER_HUB_REPO }}
             ghcr.io/${{ github.repository }}
           tags: |
             type=semver,pattern={{version}}
@@ -52,12 +53,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and publish Docker image
+      - name: Build Docker images for specified platforms and publish to logged in registries
         uses: docker/build-push-action@v4
         with:
           context: .
           platforms: linux/amd64,linux/arm64 #,linux/arm/v7,linux/arm/v6
           push: true
-          cache-from: type=registry,ref=${{ env.DOCKER_HUB_REPO }}:buildcache
-          cache-to: type=registry,ref=${{ env.DOCKER_HUB_REPO }}:buildcache,mode=max
+          cache-from: type=registry,ref=${{ vars.DOCKER_HUB_REPO }}:buildcache
+          cache-to: type=registry,ref=${{ vars.DOCKER_HUB_REPO }}:buildcache,mode=max
           tags: ${{ steps.meta.outputs.tags }}
