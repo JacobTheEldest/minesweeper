@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 import { createContext, useState } from 'react';
-import Board from './components/Board';
+import Board from './components/Board.js';
 
 export const BoardContext = createContext();
 
