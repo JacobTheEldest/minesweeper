@@ -1,4 +1,4 @@
-name: Build Docker Image and Publish to Registries
+name: Build Docker Images and Publish to Registries
 
 on:
   release:
@@ -6,6 +6,7 @@ on:
 
 jobs:
   build-and-publish:
+    name: Build Docker Images and Publish to Registries
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -52,7 +53,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and publish Docker image
+      - name: Build Docker images for specified platforms and publish to logged in registries
         uses: docker/build-push-action@v4
         with:
           context: .
