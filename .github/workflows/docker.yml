@@ -2,7 +2,8 @@ name: Build Docker image and Publish to Registries
 
 on:
   push:
-    tags: [v*]
+    tags:
+      - v*
 
 jobs:
   build-and-push-image:
