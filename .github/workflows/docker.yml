@@ -1,12 +1,11 @@
 name: Build Docker image and Publish to Registries
 
+env:
+  DOCKER_HUB_REPO: jacobtheeldest/minesweeper
+
 on:
   release:
     types: [published]
-# on:
-#   push:
-#     tags:
-#       - v*
 
 jobs:
   build-and-push-image:
@@ -29,8 +28,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            jacobtheeldest/minesweeper
-            ghcr.io/jacobtheeldest/minesweeper
+            ${{ env.DOCKER_HUB_REPO }}
+            ghcr.io/${{ github.repository }}
           tags: |
             type=semver,pattern={{version}}
             type=sha
@@ -64,9 +63,9 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64 #,linux/arm/v7,linux/arm/v6
           push: true
-          cache-from: type=registry,ref=jacobtheeldest/minesweeper:buildcache
-          cache-to: type=registry,ref=jacobtheeldest/minesweeper:buildcache,mode=max
+          cache-from: type=registry,ref=${{ env.DOCKER_HUB_REPO }}:buildcache
+          cache-to: type=registry,ref=${{ env.DOCKER_HUB_REPO }}:buildcache,mode=max
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
