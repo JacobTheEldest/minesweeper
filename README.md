@@ -41,4 +41,23 @@ This project is my testbed for improving my code workflow to comply with best pr
 - [ ] Create a user page that shows all times and difficulties for a given user.
 - [ ] Establish the ability to close the browser and reload the previously played game.
 - [ ] Establish the ability to click on a previously completed game and click through the moves that were made.
-- [ ] Deploy.
+- [x] Deploy.
+
+## How to Run
+
+Deploy app with docker compose.
+
+`docker-compose.yml`
+
+```
+version: '3.8'
+services:
+  minesweeper:
+    container_name: minesweeper
+    hostname: minesweeper
+    image: jacobtheeldest/minesweeper:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+
+```
