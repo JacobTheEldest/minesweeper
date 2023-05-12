@@ -1,5 +1,8 @@
 # Minesweeper
 
+[![semantic-release: Conventional](https://img.shields.io/badge/semantic--release-conventional-fa6673?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
 ## Best Practices
 
 This project is my testbed for improving my code workflow to comply with best practices.
@@ -17,8 +20,10 @@ This project is my testbed for improving my code workflow to comply with best pr
 - [x] Conventional Commits enforced by pre-commit hook
 - [x] Conventional Commits enforced by CI check
 - [x] Semantic Versioning as part of the CI/CD pipeline with semantic-release
+- [x] Build new docker image on each release
 
 ## Minesweeper Features
+
 - [x] Establish a react front-end minesweeper game board with in-memory game data.
 - [x] Establish basic game logic that enforces the above game rules on a 10x10 board.
 - [x] Each cell is an object that stores pertinent information for that cell (ie. wasClicked, isBomb, adjacentBombCount...)
