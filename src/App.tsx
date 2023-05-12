@@ -2,7 +2,7 @@ import { createContext, useState } from 'react';
 import './App.css';
 import Board from './components/Board.tsx';
 
-export const BoardContext = createContext<any>(null); // TODO: https://kentcdodds.com/blog/how-to-use-react-context-effectively#typescript
+export const BoardContext = createContext(null); // TODO: https://kentcdodds.com/blog/how-to-use-react-context-effectively#typescript
 
 // TODO: Make game size and mine count adjustable
 // TODO: On loss, tint board red; on win, tint board green
