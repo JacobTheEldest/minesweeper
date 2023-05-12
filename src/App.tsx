@@ -1,21 +1,38 @@
-import { createContext, useState } from 'react';
+import React, { Dispatch, createContext, useState } from 'react';
 import './App.css';
 import Board from './components/Board.tsx';
 
-export const BoardContext = createContext(null); // TODO: https://kentcdodds.com/blog/how-to-use-react-context-effectively#typescript
+interface AttributeCount {
+  flaggedCount: number;
+  revealedCount: number;
+  hiddenCount: number;
+}
+type GameResult = 'loss' | 'win' | '';
+export interface BoardContextInterface {
+  gameId: number;
+  attributeCount: AttributeCount;
+  setAttributeCount: Dispatch<React.SetStateAction<AttributeCount>>;
+  gameResult: GameResult;
+  setGameResult: Dispatch<React.SetStateAction<GameResult>>;
+}
+export const BoardContext = createContext<BoardContextInterface | undefined>(
+  undefined,
+);
 
 // TODO: Make game size and mine count adjustable
 // TODO: On loss, tint board red; on win, tint board green
 // TODO: General styling, center board, etc.
 
-function App() {
+const App: React.FC = () => {
   const [gameId, setGameId] = useState(1);
+
   const [attributeCount, setAttributeCount] = useState({
-    revealed: 0,
-    flagged: 0,
-    hidden: 0,
+    flaggedCount: 0,
+    revealedCount: 0,
+    hiddenCount: 0,
   });
-  const [gameResult, setGameResult] = useState(0);
+
+  const [gameResult, setGameResult] = useState<GameResult>('');
 
   const global = {
     rows: 10,
@@ -24,19 +41,19 @@ function App() {
   };
 
   const handleGameRestartClick = () => {
-    setGameResult(0);
+    setGameResult('');
     setGameId(gameId + 1);
     setAttributeCount({
-      revealed: 0,
-      flagged: 0,
-      hidden: 0,
+      flaggedCount: 0,
+      revealedCount: 0,
+      hiddenCount: 0,
     });
   };
 
   let endMessage = '';
-  if (gameResult === -1) {
+  if (gameResult === 'loss') {
     endMessage = 'You Lost!';
-  } else if (gameResult === 1) {
+  } else if (gameResult === 'win') {
     endMessage = 'You Won!';
   }
 
@@ -55,12 +72,12 @@ function App() {
         Game ID: {gameId}
         <br />
         Remaining Unflagged Mines:{' '}
-        {global.mines - attributeCount.flagged >= 0
-          ? global.mines - attributeCount.flagged
+        {global.mines - attributeCount.flaggedCount >= 0
+          ? global.mines - attributeCount.flaggedCount
           : 0}
         <br />
         <span className="game-result">{endMessage}</span>
-        {gameResult !== 0 ? (
+        {gameResult !== '' ? (
           <button onClick={handleGameRestartClick}>Restart</button>
         ) : null}
         <br />
@@ -69,6 +86,6 @@ function App() {
       </div>
     </BoardContext.Provider>
   );
-}
+};
 
 export default App;

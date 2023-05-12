@@ -1,21 +1,38 @@
 import './Board.css';
 import { useContext, useState, useEffect } from 'react';
-import { BoardContext } from '../App.tsx';
+import { BoardContext, BoardContextInterface } from '../App.tsx';
 
-const Board = ({ global }) => {
+interface Global {
+  rows: number;
+  cols: number;
+  mines: number;
+}
+const Board = ({ global }: { global: Global }) => {
+  const tmpBoardContext = useContext(BoardContext);
   const { gameId, setAttributeCount, gameResult, setGameResult } =
-    useContext(BoardContext);
-  const [board, setBoard] = useState([]);
-  const [moves, setMoves] = useState([]);
+    tmpBoardContext as BoardContextInterface;
 
-  const randInRange = (min, max) => {
+  type Board = Array<Array<cell>>;
+  const [board, setBoard] = useState<Board>([]);
+
+  const [moves, setMoves] = useState<Array<cell>>([]);
+
+  const randInRange = (min: number, max: number) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
   };
 
   class cell {
-    constructor(row, col) {
+    row: number;
+    col: number;
+    flagged: boolean;
+    revealed: boolean;
+    mine: boolean;
+    neighbors: cell[];
+    adjacentMines: number;
+
+    constructor(row: number, col: number) {
       this.row = row;
       this.col = col;
       this.flagged = false;
@@ -37,8 +54,7 @@ const Board = ({ global }) => {
       this.mine = true;
     };
 
-    queryNeighbors = (board) => {
-      // console.log('querying neighbors on board:', board);
+    queryNeighbors = (board: Board) => {
       const potentialRows = [this.row - 1, this.row, this.row + 1];
       const potentialCols = [this.col - 1, this.col, this.col + 1];
 
@@ -63,14 +79,17 @@ const Board = ({ global }) => {
     };
   }
 
-  const buildBoard = (rows = global.rows, cols = global.cols) => {
-    console.log('buildBoard - rows, cols:', rows, cols);
+  const buildBoard = (
+    rows = global.rows,
+    cols = global.cols,
+    mines = global.mines,
+  ) => {
     const emptyBoard = generateEmptyBoard(rows, cols);
 
-    const minedBoard = placeMines(rows, cols, global.mines, emptyBoard);
+    const minedBoard = placeMines(rows, cols, mines, emptyBoard);
 
     // iterate over each cell
-    minedBoard.forEach((row) => {
+    minedBoard.forEach((row: Array<cell>) => {
       row.forEach((cell) => {
         cell.queryNeighbors(minedBoard);
       });
@@ -79,7 +98,10 @@ const Board = ({ global }) => {
     setBoard(minedBoard);
   };
 
-  const generateEmptyBoard = (rows = global.rows, cols = global.cols) => {
+  const generateEmptyBoard = (
+    rows = global.rows,
+    cols = global.cols,
+  ): Board => {
     const grid = [];
     for (let row = 0; row < rows; row++) {
       const rowArray = [];
@@ -92,27 +114,18 @@ const Board = ({ global }) => {
   };
 
   const placeMines = (
-    rows = global.rows,
-    cols = global.cols,
-    mines = global.mines,
-    board
+    rows: number,
+    cols: number,
+    mines: number,
+    board: Board,
   ) => {
     const updatedBoard = board;
-
-    console.log('placing mines');
-    console.log(
-      'board:',
-      updatedBoard.length,
-      'rows,',
-      updatedBoard[0].length,
-      'cols'
-    );
 
     while (mines > 0) {
       const randRow = randInRange(0, rows - 1);
       const randCol = randInRange(0, cols - 1);
 
-      console.log('placing mine at:', randRow, randCol);
+      // console.log('placing mine at:', randRow, randCol);
       // mines--;
       if (!updatedBoard[randRow][randCol].mine) {
         updatedBoard[randRow][randCol].setMined();
@@ -123,41 +136,45 @@ const Board = ({ global }) => {
     return updatedBoard;
   };
 
-  const countAttributes = (board) => {
-    let flagged = 0;
-    let revealed = 0;
+  const countAttributes = (board: Board) => {
+    let flaggedCount = 0;
+    let revealedCount = 0;
 
     board.forEach((row) => {
       row.forEach((cell) => {
         if (cell.flagged) {
-          flagged++;
+          flaggedCount++;
         }
         if (cell.revealed) {
-          revealed++;
+          revealedCount++;
         }
       });
     });
 
-    const hidden = board.length * board[0].length - revealed;
+    const hiddenCount = board.length * board[0].length - revealedCount;
 
-    if (hidden === global.mines) {
-      setGameResult(1);
+    if (hiddenCount === global.mines) {
+      setGameResult('win');
     }
 
     setAttributeCount({
-      flagged,
-      revealed,
-      hidden,
+      flaggedCount,
+      revealedCount,
+      hiddenCount,
     });
   };
 
-  const revealCells = (cell) => {
+  const revealCells = (cell: cell) => {
     if (cell.adjacentMines !== 0) {
       cell.setRevealed();
       return;
     }
 
-    const getConnectedZeroes = (cell, connectedZeroes, cellsToReveal) => {
+    const getConnectedZeroes = (
+      cell: cell,
+      connectedZeroes: Set<cell>,
+      cellsToReveal: Set<cell>,
+    ) => {
       cell.neighbors.forEach((neighbor) => {
         cellsToReveal.add(neighbor);
         if (
@@ -185,7 +202,7 @@ const Board = ({ global }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameId]);
 
-  const cellDisplay = (cell) => {
+  const cellDisplay = (cell: cell) => {
     let cssClassString = 'cell';
     let cellIcon = '';
 
@@ -200,7 +217,7 @@ const Board = ({ global }) => {
       cellIcon = '💣';
     } else {
       cssClassString += ' number';
-      cellIcon = cell.adjacentMines;
+      cellIcon = cell.adjacentMines === 0 ? '' : cell.adjacentMines.toString();
     }
 
     return (
@@ -215,11 +232,12 @@ const Board = ({ global }) => {
     );
   };
 
-  const handleLeftClick = (e, cell) => {
-    console.log('left click on:', cell);
+  const handleLeftClick = (e: React.MouseEvent, cell: cell) => {
+    // console.log('left click on:', cell);
     e.preventDefault();
 
-    if (gameResult !== 0) {
+    // Don't do anything if game is over
+    if (gameResult !== '') {
       return;
     }
 
@@ -227,18 +245,19 @@ const Board = ({ global }) => {
       revealCells(cell);
       countAttributes(board);
       if (cell.mine) {
-        setGameResult(-1);
+        setGameResult('loss');
       }
     }
 
     setMoves([...moves, cell]);
   };
 
-  const handleRightClick = (e, cell) => {
-    console.log('right click on:', cell);
+  const handleRightClick = (e: React.MouseEvent, cell: cell) => {
+    // console.log('right click on:', cell);
     e.preventDefault();
 
-    if (gameResult !== 0) {
+    // Don't do anything if game is over
+    if (gameResult !== '') {
       return;
     }
 
@@ -249,13 +268,13 @@ const Board = ({ global }) => {
   };
 
   let boardCSSClassString = 'board';
-  if (gameResult !== 0) {
+  if (gameResult !== '') {
     boardCSSClassString += ' game-over';
   }
 
   return (
     <div className={boardCSSClassString}>
-      {board.map((row, rowNum) => {
+      {board.map((row: Array<cell>, rowNum: number) => {
         return (
           <div className="row" key={rowNum}>
             {row.map((cell) => {
