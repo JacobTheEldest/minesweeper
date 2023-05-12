@@ -1,9 +1,8 @@
-// import logo from './logo.svg';
-import './App.css';
 import { createContext, useState } from 'react';
-import Board from './components/Board.js';
+import './App.css';
+import Board from './components/Board.tsx';
 
-export const BoardContext = createContext();
+export const BoardContext = createContext(null); // TODO: https://kentcdodds.com/blog/how-to-use-react-context-effectively#typescript
 
 // TODO: Make game size and mine count adjustable
 // TODO: On loss, tint board red; on win, tint board green
@@ -67,20 +66,6 @@ function App() {
         <br />
         <Board global={global} />
         <br />
-        {/* <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header> */}
       </div>
     </BoardContext.Provider>
   );

@@ -1,6 +1,6 @@
 import './Board.css';
 import { useContext, useState, useEffect } from 'react';
-import { BoardContext } from '../App.js';
+import { BoardContext } from '../App.tsx';
 
 const Board = ({ global }) => {
   const { gameId, setAttributeCount, gameResult, setGameResult } =
@@ -97,7 +97,7 @@ const Board = ({ global }) => {
     mines = global.mines,
     board
   ) => {
-    let updatedBoard = board;
+    const updatedBoard = board;
 
     console.log('placing mines');
     console.log(
@@ -109,8 +109,8 @@ const Board = ({ global }) => {
     );
 
     while (mines > 0) {
-      let randRow = randInRange(0, rows - 1);
-      let randCol = randInRange(0, cols - 1);
+      const randRow = randInRange(0, rows - 1);
+      const randCol = randInRange(0, cols - 1);
 
       console.log('placing mine at:', randRow, randCol);
       // mines--;
@@ -138,7 +138,7 @@ const Board = ({ global }) => {
       });
     });
 
-    let hidden = board.length * board[0].length - revealed;
+    const hidden = board.length * board[0].length - revealed;
 
     if (hidden === global.mines) {
       setGameResult(1);
