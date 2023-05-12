@@ -7,11 +7,11 @@ on:
 
 jobs:
   clean_code:
-    name: Lint and format code
+    name: Check linting and formatting of code
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
           # Make sure the actual branch is checked out when running on pull requests
@@ -22,16 +22,17 @@ jobs:
       - name: Install packages
         run: npm ci
 
-      - name: Format with Prettier
+      - name: Check code formatting with Prettier
         run: npm run format
 
-      - name: Lint with eslint
+      - name: Check linting with ESLint
         run: npm run lint
 
   commitlint:
+    name: Check linting of commits in this Pull Request
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
           # Make sure the actual branch is checked out when running on pull requests
