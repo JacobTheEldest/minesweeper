@@ -82,7 +82,7 @@ const Board = ({ global }: { global: Global }) => {
   const buildBoard = (
     rows = global.rows,
     cols = global.cols,
-    mines = global.mines
+    mines = global.mines,
   ) => {
     const emptyBoard = generateEmptyBoard(rows, cols);
 
@@ -100,7 +100,7 @@ const Board = ({ global }: { global: Global }) => {
 
   const generateEmptyBoard = (
     rows = global.rows,
-    cols = global.cols
+    cols = global.cols,
   ): Board => {
     const grid = [];
     for (let row = 0; row < rows; row++) {
@@ -117,7 +117,7 @@ const Board = ({ global }: { global: Global }) => {
     rows: number,
     cols: number,
     mines: number,
-    board: Board
+    board: Board,
   ) => {
     const updatedBoard = board;
 
@@ -173,7 +173,7 @@ const Board = ({ global }: { global: Global }) => {
     const getConnectedZeroes = (
       cell: cell,
       connectedZeroes: Set<cell>,
-      cellsToReveal: Set<cell>
+      cellsToReveal: Set<cell>,
     ) => {
       cell.neighbors.forEach((neighbor) => {
         cellsToReveal.add(neighbor);

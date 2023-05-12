@@ -16,7 +16,7 @@ export interface BoardContextInterface {
   setGameResult: Dispatch<React.SetStateAction<GameResult>>;
 }
 export const BoardContext = createContext<BoardContextInterface | undefined>(
-  undefined
+  undefined,
 );
 
 // TODO: Make game size and mine count adjustable
