@@ -14,8 +14,8 @@ const Board = ({ global }: { global: Global }) => {
 
   type Board = Array<Array<cell>>;
   const [board, setBoard] = useState<Board>([]);
-
   const [moves, setMoves] = useState<Array<cell>>([]);
+  const [renderedGame, setRenderedGame] = useState<number>(0);
 
   const randInRange = (min: number, max: number) => {
     min = Math.ceil(min);
@@ -196,12 +196,6 @@ const Board = ({ global }: { global: Global }) => {
     });
   };
 
-  // Initial Setup
-  useEffect(() => {
-    buildBoard();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameId]);
-
   const cellDisplay = (cell: cell) => {
     let cssClassString = 'cell';
     let cellIcon = '';
@@ -266,6 +260,12 @@ const Board = ({ global }: { global: Global }) => {
 
     setMoves([...moves, cell]);
   };
+
+  // Build new boards when necessary
+  if (renderedGame !== gameId) {
+    buildBoard();
+    setRenderedGame(gameId);
+  }
 
   let boardCSSClassString = 'board';
   if (gameResult !== '') {
