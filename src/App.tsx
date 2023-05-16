@@ -35,14 +35,15 @@ const App: React.FC = () => {
   const [gameResult, setGameResult] = useState<GameResult>('');
 
   const global = {
-    rows: 10,
-    cols: 10,
+    rows: 20,
+    cols: 30,
     mines: 10,
   };
 
   const handleGameRestartClick = () => {
     setGameResult('');
     setGameId(gameId + 1);
+
     setAttributeCount({
       flaggedCount: 0,
       revealedCount: 0,
@@ -68,19 +69,21 @@ const App: React.FC = () => {
       }}
     >
       <div className="">
-        <h1>Minesweeper</h1>
-        Game ID: {gameId}
-        <br />
-        Remaining Unflagged Mines:{' '}
-        {global.mines - attributeCount.flaggedCount >= 0
-          ? global.mines - attributeCount.flaggedCount
-          : 0}
-        <br />
-        <span className="game-result">{endMessage}</span>
-        {gameResult !== '' ? (
-          <button onClick={handleGameRestartClick}>Restart</button>
-        ) : null}
-        <br />
+        <div className="game-info">
+          <h1>Minesweeper</h1>
+          Game ID: {gameId}
+          <br />
+          Remaining Unflagged Mines:{' '}
+          {global.mines - attributeCount.flaggedCount >= 0
+            ? global.mines - attributeCount.flaggedCount
+            : 0}
+          <br />
+          <span className="game-result">{endMessage}</span>
+          <br />
+          {gameResult !== '' ? (
+            <button onClick={handleGameRestartClick}>Restart</button>
+          ) : null}
+        </div>
         <Board global={global} />
         <br />
       </div>

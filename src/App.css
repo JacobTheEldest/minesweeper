@@ -1,4 +1,15 @@
+.game-info {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.game-info h1 {
+  margin-top: 0%;
+  margin-bottom: 10px;
+}
+
 .game-result {
+  color: red;
 }
 
 /* .App {
