@@ -1,5 +1,5 @@
 import './Board.css';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState } from 'react';
 import { BoardContext, BoardContextInterface } from '../App.tsx';
 
 interface Global {
