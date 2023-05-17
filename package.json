@@ -9,7 +9,8 @@
     "format": "prettier --check ./src",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "commit": "cz",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky install"
   },
   "dependencies": {
     "react": "^18.2.0",
