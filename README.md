@@ -13,7 +13,7 @@ This project is my testbed for improving my code workflow to comply with best pr
 - [x] Code linting with eslint
 - [x] CI check during pull request for code linting
 - [ ] Pre-commit hook for code linting
-- [ ] Testing
+- [x] Testing
 - [ ] CI check for tests
 - [ ] Pre-commit hook for tests
 - [x] Conventional Commits optionally generated with commitizen
