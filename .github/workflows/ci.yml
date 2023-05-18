@@ -4,11 +4,13 @@ on:
   pull_request:
     branches:
       - master
+  push:
+    branches:
+      - master
 
 jobs:
   clean_code:
     name: Check linting and formatting of code
-    if: github.event.commits[0].author.name != 'semantic-release-bot'
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +33,6 @@ jobs:
 
   commitlint:
     name: Check linting of commits in this Pull Request
-    if: github.event.commits[0].author.name != 'semantic-release-bot'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
