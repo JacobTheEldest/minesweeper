@@ -7,18 +7,33 @@
 
 This project is my testbed for improving my code workflow to comply with best practices.
 
+Code Formatting
+
 - [x] Code formatting with prettier
-- [x] CI check during pull request for code formatting
 - [ ] Pre-commit hook for code formatting
+- [x] CI check during pull request for code formatting
+
+Code Linting
+
 - [x] Code linting with eslint
-- [x] CI check during pull request for code linting
 - [ ] Pre-commit hook for code linting
-- [x] Testing
-- [ ] CI check for tests
+- [x] CI check during pull request for code linting
+
+Testing
+
+- [x] Testing with Vitest and React Testing Library
 - [ ] Pre-commit hook for tests
+- [ ] CI check for tests
+- [ ] CI check for test coverage
+
+Convential Commits
+
 - [x] Conventional Commits optionally generated with commitizen
 - [x] Conventional Commits enforced by pre-commit hook
 - [x] Conventional Commits enforced by CI check
+
+Versioning and Build
+
 - [x] Semantic Versioning as part of the CI/CD pipeline with semantic-release
 - [x] Build new docker image on each release
 
