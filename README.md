@@ -10,24 +10,27 @@ This project is my testbed for improving my code workflow to comply with best pr
 Code Formatting
 
 - [x] Code formatting with prettier
+- [x] Code formatting performed automatically by editor
 - [ ] Pre-commit hook for code formatting
 - [x] CI check during pull request for code formatting
 
 Code Linting
 
 - [x] Code linting with eslint
+- [x] Code linting performed automatically by editor
 - [ ] Pre-commit hook for code linting
 - [x] CI check during pull request for code linting
 
 Testing
 
 - [x] Testing with Vitest and React Testing Library
-- [ ] Pre-commit hook for tests
-- [ ] CI check for tests
+- [x] Pre-commit hook for tests
+- [x] CI check for tests
 - [ ] CI check for test coverage
 
-Convential Commits
+Git Best Practices
 
+- [x] Don't commit directly to master and enforce by pre-commit hook
 - [x] Conventional Commits optionally generated with commitizen
 - [x] Conventional Commits enforced by pre-commit hook
 - [x] Conventional Commits enforced by CI check
