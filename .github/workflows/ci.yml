@@ -19,7 +19,7 @@ jobs:
           # This is important to fetch the changes to the previous commit
           fetch-depth: 0
 
-      - name: Install packages
+      - name: Install dependencies
         run: npm ci
 
       - name: Check code formatting with Prettier
@@ -54,3 +54,22 @@ jobs:
 
       - name: Validate PR commits with commitlint
         run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+          # This is important to fetch the changes to the previous commit
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with vitest
+        run: npm run test:once
