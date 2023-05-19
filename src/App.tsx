@@ -19,10 +19,6 @@ export const BoardContext = createContext<BoardContextInterface | undefined>(
   undefined,
 );
 
-// TODO: Make game size and mine count adjustable
-// TODO: On loss, tint board red; on win, tint board green
-// TODO: General styling, center board, etc.
-
 const App: React.FC = () => {
   const [gameId, setGameId] = useState(1);
 
