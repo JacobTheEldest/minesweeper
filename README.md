@@ -76,6 +76,6 @@ services:
     image: jacobtheeldest/minesweeper:latest
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "80:80"
 
 ```
