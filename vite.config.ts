@@ -13,8 +13,9 @@ export default defineConfig({
     port: 3000,
   },
   test: {
-    environment: 'jsdom',
     globals: true,
-    setupFiles: './src/tests/setup.ts',
+    environment: 'jsdom',
+    exclude: ['tests/**', 'node_modules/**'], // Prevent vitest from running playwright tests
+    setupFiles: './vitest/setup.ts',
   },
 });
