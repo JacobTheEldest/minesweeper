@@ -14,6 +14,10 @@ export interface BoardContextInterface {
   setAttributeCount: Dispatch<React.SetStateAction<AttributeCount>>;
   gameResult: GameResult;
   setGameResult: Dispatch<React.SetStateAction<GameResult>>;
+  rows: number;
+  cols: number;
+  mines: number;
+  setCurrentMines: Dispatch<React.SetStateAction<number>>;
 }
 export const BoardContext = createContext<BoardContextInterface | undefined>(
   undefined,
@@ -30,13 +34,25 @@ const App: React.FC = () => {
 
   const [gameResult, setGameResult] = useState<GameResult>('');
 
-  const global = {
-    rows: 20,
-    cols: 30,
-    mines: 10,
+  const [rows, setRows] = useState(10);
+  const [cols, setCols] = useState(10);
+  const [mines, setMines] = useState(10);
+  const [currentMines, setCurrentMines] = useState(10);
+
+  const handleColumnsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCols(parseInt(e.target.value));
   };
 
-  const handleGameRestartClick = () => {
+  const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRows(parseInt(e.target.value));
+  };
+
+  const handleMinesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMines(parseInt(e.target.value));
+  };
+
+  const handleNewGameClick = (e: React.FormEvent) => {
+    e.preventDefault();
     setGameResult('');
     setGameId(gameId + 1);
 
@@ -62,6 +78,10 @@ const App: React.FC = () => {
         setAttributeCount,
         gameResult,
         setGameResult,
+        rows,
+        cols,
+        mines,
+        setCurrentMines,
       }}
     >
       <div className="">
@@ -70,17 +90,47 @@ const App: React.FC = () => {
           Game ID: {gameId}
           <br />
           Remaining Unflagged Mines:{' '}
-          {global.mines - attributeCount.flaggedCount >= 0
-            ? global.mines - attributeCount.flaggedCount
+          {/* TODO: store initial mine count for this */}
+          {currentMines - attributeCount.flaggedCount >= 0
+            ? currentMines - attributeCount.flaggedCount
             : 0}
           <br />
+          <form className="game-difficulty" onSubmit={handleNewGameClick}>
+            <span className="columns">Columns:</span>
+            <input
+              type="number"
+              name="columns"
+              className="columns"
+              onChange={handleColumnsChange}
+              value={cols}
+            />
+
+            <span className="rows">Rows:</span>
+            <input
+              type="number"
+              name="rows"
+              className="rows"
+              onChange={handleRowsChange}
+              value={rows}
+            />
+
+            <span className="mines">Mines:</span>
+            <input
+              type="number"
+              name="mines"
+              className="mines-input"
+              onChange={handleMinesChange}
+              value={mines}
+            />
+
+            <button type="submit">New Game</button>
+          </form>
           <span className="game-result">{endMessage}</span>
-          <br />
           {gameResult !== '' ? (
-            <button onClick={handleGameRestartClick}>Restart</button>
+            <button onClick={handleNewGameClick}>Restart</button>
           ) : null}
         </div>
-        <Board global={global} />
+        <Board />
         <br />
       </div>
     </BoardContext.Provider>
