@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run test:once
+npm run test run
+npm run test:e2e
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
 if [ "$branch" = "master" ]; then
