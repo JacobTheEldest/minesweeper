@@ -72,4 +72,14 @@ jobs:
         run: npm ci
 
       - name: Run tests with vitest
-        run: npm run test:once
+        run: npm run test
+
+      - name: Run tests with playwright
+        run: npm run test:e2e
+      - name: Save playwright report as artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
