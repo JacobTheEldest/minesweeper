@@ -1,9 +1,66 @@
-import './Board.css';
-import { useContext, useState } from 'react';
-import { BoardContext, BoardContextInterface } from '../App.tsx';
+import './Gameboard.css';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { GameboardContext, GameboardContextInterface } from '../App';
 
-const Board = () => {
-  const tmpBoardContext = useContext(BoardContext);
+type Board = Array<Array<cell>>;
+
+class cell {
+  row: number;
+  col: number;
+  flagged: boolean;
+  revealed: boolean;
+  mine: boolean;
+  neighbors: cell[];
+  adjacentMines: number;
+
+  constructor(row: number, col: number) {
+    this.row = row;
+    this.col = col;
+    this.flagged = false;
+    this.revealed = false;
+    this.mine = false;
+    this.neighbors = [];
+    this.adjacentMines = 0;
+  }
+
+  toggleFlagged = () => {
+    this.flagged = !this.flagged;
+  };
+
+  setRevealed = () => {
+    this.revealed = true;
+  };
+
+  setMined = () => {
+    this.mine = true;
+  };
+
+  queryNeighbors = (board: Board) => {
+    const potentialRows = [this.row - 1, this.row, this.row + 1];
+    const potentialCols = [this.col - 1, this.col, this.col + 1];
+
+    const neighborRows = potentialRows.filter((row) => {
+      return row >= 0 && row < board.length;
+    });
+
+    const neighborCols = potentialCols.filter((col) => {
+      return col >= 0 && col < board[0].length;
+    });
+
+    neighborRows.forEach((row) => {
+      neighborCols.forEach((col) => {
+        if (!(col === this.col && row === this.row)) {
+          if (board[row][col].mine) {
+            this.adjacentMines++;
+          }
+          this.neighbors.push(board[row][col]);
+        }
+      });
+    });
+  };
+}
+
+const Gameboard = () => {
   const {
     gameId,
     setAttributeCount,
@@ -13,12 +70,10 @@ const Board = () => {
     cols,
     mines,
     setCurrentMines,
-  } = tmpBoardContext as BoardContextInterface;
+  } = useContext(GameboardContext) as GameboardContextInterface;
 
-  type Board = Array<Array<cell>>;
   const [board, setBoard] = useState<Board>([]);
   const [moves, setMoves] = useState<Array<cell>>([]);
-  const [renderedGame, setRenderedGame] = useState<number>(0);
 
   const randInRange = (min: number, max: number) => {
     min = Math.ceil(min);
@@ -26,110 +81,57 @@ const Board = () => {
     return Math.floor(Math.random() * (max - min) + min);
   };
 
-  class cell {
-    row: number;
-    col: number;
-    flagged: boolean;
-    revealed: boolean;
-    mine: boolean;
-    neighbors: cell[];
-    adjacentMines: number;
+  const generateEmptyBoard = useCallback(
+    (rows: number, cols: number): Board => {
+      const grid = [];
+      for (let row = 0; row < rows; row++) {
+        const rowArray = [];
+        for (let col = 0; col < cols; col++) {
+          rowArray.push(new cell(row, col));
+        }
+        grid.push(rowArray);
+      }
+      return grid;
+    },
+    [],
+  );
 
-    constructor(row: number, col: number) {
-      this.row = row;
-      this.col = col;
-      this.flagged = false;
-      this.revealed = false;
-      this.mine = false;
-      this.neighbors = [];
-      this.adjacentMines = 0;
-    }
+  const placeMines = useCallback(
+    (rows: number, cols: number, mines: number, board: Board) => {
+      setCurrentMines(mines);
+      const updatedBoard = board;
 
-    toggleFlagged = () => {
-      this.flagged = !this.flagged;
-    };
+      while (mines > 0) {
+        const randRow = randInRange(0, rows - 1);
+        const randCol = randInRange(0, cols - 1);
 
-    setRevealed = () => {
-      this.revealed = true;
-    };
+        if (!updatedBoard[randRow][randCol].mine) {
+          updatedBoard[randRow][randCol].setMined();
+          mines--;
+        }
+      }
 
-    setMined = () => {
-      this.mine = true;
-    };
+      return updatedBoard;
+    },
+    [setCurrentMines],
+  );
 
-    queryNeighbors = (board: Board) => {
-      const potentialRows = [this.row - 1, this.row, this.row + 1];
-      const potentialCols = [this.col - 1, this.col, this.col + 1];
+  const buildBoard = useCallback(
+    (rows: number, cols: number, mines: number) => {
+      const emptyBoard = generateEmptyBoard(rows, cols);
 
-      const neighborRows = potentialRows.filter((row) => {
-        return row >= 0 && row < board.length;
-      });
+      const minedBoard = placeMines(rows, cols, mines, emptyBoard);
 
-      const neighborCols = potentialCols.filter((col) => {
-        return col >= 0 && col < board[0].length;
-      });
-
-      neighborRows.forEach((row) => {
-        neighborCols.forEach((col) => {
-          if (!(col === this.col && row === this.row)) {
-            if (board[row][col].mine) {
-              this.adjacentMines++;
-            }
-            this.neighbors.push(board[row][col]);
-          }
+      minedBoard.forEach((row: Array<cell>) => {
+        row.forEach((cell) => {
+          cell.queryNeighbors(minedBoard);
         });
       });
-    };
-  }
 
-  const buildBoard = (rows: number, cols: number, mines: number) => {
-    const emptyBoard = generateEmptyBoard(rows, cols);
-
-    const minedBoard = placeMines(rows, cols, mines, emptyBoard);
-
-    // iterate over each cell
-    minedBoard.forEach((row: Array<cell>) => {
-      row.forEach((cell) => {
-        cell.queryNeighbors(minedBoard);
-      });
-    });
-
-    setBoard(minedBoard);
-  };
-
-  const generateEmptyBoard = (rows: number, cols: number): Board => {
-    const grid = [];
-    for (let row = 0; row < rows; row++) {
-      const rowArray = [];
-      for (let col = 0; col < cols; col++) {
-        rowArray.push(new cell(row, col));
-      }
-      grid.push(rowArray);
-    }
-    return grid;
-  };
-
-  const placeMines = (
-    rows: number,
-    cols: number,
-    mines: number,
-    board: Board,
-  ) => {
-    setCurrentMines(mines);
-    const updatedBoard = board;
-
-    while (mines > 0) {
-      const randRow = randInRange(0, rows - 1);
-      const randCol = randInRange(0, cols - 1);
-
-      if (!updatedBoard[randRow][randCol].mine) {
-        updatedBoard[randRow][randCol].setMined();
-        mines--;
-      }
-    }
-
-    return updatedBoard;
-  };
+      setBoard(minedBoard);
+    },
+    [generateEmptyBoard, placeMines],
+  );
 
   const countAttributes = (board: Board) => {
     let flaggedCount = 0;
@@ -256,11 +258,10 @@ const Board = () => {
     setMoves([...moves, cell]);
   };
 
-  // Build new boards when necessary
-  if (renderedGame !== gameId) {
+  // Build a new board when the gameId changes
+  useEffect(() => {
     buildBoard(rows, cols, mines);
-    setRenderedGame(gameId);
-  }
+  }, [gameId, buildBoard, rows, cols, mines]);
 
   let boardCSSClassString = 'board';
   if (gameResult !== '') {
@@ -282,4 +283,4 @@ const Board = () => {
   );
 };
 
-export default Board;
+export default Gameboard;

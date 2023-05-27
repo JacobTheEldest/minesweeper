@@ -1,6 +1,6 @@
 import React, { Dispatch, createContext, useState } from 'react';
 import './App.css';
-import Board from './components/Board.tsx';
+import Gameboard from './components/Gameboard.tsx';
 
 interface AttributeCount {
   flaggedCount: number;
@@ -8,7 +8,7 @@ interface AttributeCount {
   hiddenCount: number;
 }
 type GameResult = 'loss' | 'win' | '';
-export interface BoardContextInterface {
+export interface GameboardContextInterface {
   gameId: number;
   attributeCount: AttributeCount;
   setAttributeCount: Dispatch<React.SetStateAction<AttributeCount>>;
@@ -19,9 +19,9 @@ export interface BoardContextInterface {
   mines: number;
   setCurrentMines: Dispatch<React.SetStateAction<number>>;
 }
-export const BoardContext = createContext<BoardContextInterface | undefined>(
-  undefined,
-);
+export const GameboardContext = createContext<
+  GameboardContextInterface | undefined
+>(undefined);
 
 const App: React.FC = () => {
   const [gameId, setGameId] = useState(1);
@@ -76,7 +76,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <BoardContext.Provider
+    <GameboardContext.Provider
       value={{
         gameId,
         attributeCount,
@@ -95,7 +95,6 @@ const App: React.FC = () => {
           Game ID: {gameId}
           <br />
           Remaining Unflagged Mines:{' '}
-          {/* TODO: store initial mine count for this */}
           {currentMines - attributeCount.flaggedCount >= 0
             ? currentMines - attributeCount.flaggedCount
             : 0}
@@ -132,10 +131,10 @@ const App: React.FC = () => {
           </form>
           <span className="game-result">{endMessage}</span>
         </div>
-        <Board />
+        <Gameboard />
         <br />
       </div>
-    </BoardContext.Provider>
+    </GameboardContext.Provider>
   );
 };
 
