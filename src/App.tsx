@@ -106,7 +106,7 @@ const App: React.FC = () => {
               name="columns"
               className="columns"
               onChange={handleColumnsChange}
-              value={cols}
+              value={cols ? cols : 0}
             />
 
             <span className="rows">Rows:</span>
@@ -115,7 +115,7 @@ const App: React.FC = () => {
               name="rows"
               className="rows"
               onChange={handleRowsChange}
-              value={rows}
+              value={rows ? rows : 0}
             />
 
             <span className="mines">Mines:</span>
@@ -124,7 +124,7 @@ const App: React.FC = () => {
               name="mines"
               className="mines-input"
               onChange={handleMinesChange}
-              value={mines}
+              value={mines ? mines : 0}
             />
 
             <button type="submit">New Game</button>
