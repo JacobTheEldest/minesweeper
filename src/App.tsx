@@ -40,15 +40,20 @@ const App: React.FC = () => {
   const [currentMines, setCurrentMines] = useState(10);
 
   const handleColumnsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCols(parseInt(e.target.value));
+    const newCols = parseInt(e.target.value);
+    setCols(newCols);
+    setMines(Math.round((newCols * rows) / 10));
   };
 
   const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRows(parseInt(e.target.value));
+    const newRows = parseInt(e.target.value);
+    setRows(newRows);
+    setMines(Math.round((newRows * cols) / 10));
   };
 
   const handleMinesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMines(parseInt(e.target.value));
+    const newMines = parseInt(e.target.value);
+    setMines(newMines);
   };
 
   const handleNewGameClick = (e: React.FormEvent) => {
@@ -126,9 +131,6 @@ const App: React.FC = () => {
             <button type="submit">New Game</button>
           </form>
           <span className="game-result">{endMessage}</span>
-          {gameResult !== '' ? (
-            <button onClick={handleNewGameClick}>Restart</button>
-          ) : null}
         </div>
         <Board />
         <br />
