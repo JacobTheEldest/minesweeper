@@ -69,10 +69,13 @@ const App: React.FC = () => {
   };
 
   let endMessage = '';
+  let gameResultCSSString = 'game-result';
   if (gameResult === 'loss') {
     endMessage = 'You Lost!';
+    gameResultCSSString += ' game-lost';
   } else if (gameResult === 'win') {
     endMessage = 'You Won!';
+    gameResultCSSString += ' game-won';
   }
 
   return (
@@ -129,7 +132,7 @@ const App: React.FC = () => {
 
             <button type="submit">New Game</button>
           </form>
-          <span className="game-result">{endMessage}</span>
+          <span className={gameResultCSSString}>{endMessage}</span>
         </div>
         <Gameboard />
         <br />
