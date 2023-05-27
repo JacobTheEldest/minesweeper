@@ -47,7 +47,7 @@ Versioning and Build
 - [x] Each cell is an object that stores pertinent information for that cell (ie. wasClicked, isBomb, adjacentBombCount...)
 - [x] One way to store these values to keep track of position is an adjacency matrix .
 - [x] One could also have a property pointing to adjacent cells directly on the cell object.
-- [ ] Add the ability to change the difficulty (size of the board and quantity of mines).
+- [x] Add the ability to change the difficulty (size of the board and quantity of mines).
 - [ ] Add a timer to the game.
 - [ ] View a list of recently played user times and difficulty setting.
 - [ ] Define a RESTful API that connects to a postgres database.

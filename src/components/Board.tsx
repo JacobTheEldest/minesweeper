@@ -2,15 +2,18 @@ import './Board.css';
 import { useContext, useState } from 'react';
 import { BoardContext, BoardContextInterface } from '../App.tsx';
 
-interface Global {
-  rows: number;
-  cols: number;
-  mines: number;
-}
-const Board = ({ global }: { global: Global }) => {
+const Board = () => {
   const tmpBoardContext = useContext(BoardContext);
-  const { gameId, setAttributeCount, gameResult, setGameResult } =
-    tmpBoardContext as BoardContextInterface;
+  const {
+    gameId,
+    setAttributeCount,
+    gameResult,
+    setGameResult,
+    rows,
+    cols,
+    mines,
+    setCurrentMines,
+  } = tmpBoardContext as BoardContextInterface;
 
   type Board = Array<Array<cell>>;
   const [board, setBoard] = useState<Board>([]);
@@ -79,11 +82,7 @@ const Board = ({ global }: { global: Global }) => {
     };
   }
 
-  const buildBoard = (
-    rows = global.rows,
-    cols = global.cols,
-    mines = global.mines,
-  ) => {
+  const buildBoard = (rows: number, cols: number, mines: number) => {
     const emptyBoard = generateEmptyBoard(rows, cols);
 
     const minedBoard = placeMines(rows, cols, mines, emptyBoard);
@@ -98,10 +97,7 @@ const Board = ({ global }: { global: Global }) => {
     setBoard(minedBoard);
   };
 
-  const generateEmptyBoard = (
-    rows = global.rows,
-    cols = global.cols,
-  ): Board => {
+  const generateEmptyBoard = (rows: number, cols: number): Board => {
     const grid = [];
     for (let row = 0; row < rows; row++) {
       const rowArray = [];
@@ -119,14 +115,13 @@ const Board = ({ global }: { global: Global }) => {
     mines: number,
     board: Board,
   ) => {
+    setCurrentMines(mines);
     const updatedBoard = board;
 
     while (mines > 0) {
       const randRow = randInRange(0, rows - 1);
       const randCol = randInRange(0, cols - 1);
 
-      // console.log('placing mine at:', randRow, randCol);
-      // mines--;
       if (!updatedBoard[randRow][randCol].mine) {
         updatedBoard[randRow][randCol].setMined();
         mines--;
@@ -153,7 +148,7 @@ const Board = ({ global }: { global: Global }) => {
 
     const hiddenCount = board.length * board[0].length - revealedCount;
 
-    if (hiddenCount === global.mines) {
+    if (hiddenCount === mines) {
       setGameResult('win');
     }
 
@@ -263,7 +258,7 @@ const Board = ({ global }: { global: Global }) => {
 
   // Build new boards when necessary
   if (renderedGame !== gameId) {
-    buildBoard();
+    buildBoard(rows, cols, mines);
     setRenderedGame(gameId);
   }
 
