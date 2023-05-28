@@ -10,7 +10,7 @@
 
 .game-difficulty {
   text-align: center;
-  margin-bottom: 10px;
+  margin-top: 10px;
   display: grid;
   grid: 1fr 1fr 1fr / 1fr auto 1fr;
 }
@@ -39,5 +39,13 @@
 }
 
 .game-result {
+  text-emphasis: bold;
+}
+
+.game-lost {
   color: red;
+}
+
+.game-won {
+  color: green;
 }

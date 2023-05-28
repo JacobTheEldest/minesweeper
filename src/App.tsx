@@ -1,6 +1,6 @@
 import React, { Dispatch, createContext, useState } from 'react';
 import './App.css';
-import Board from './components/Board.tsx';
+import Gameboard from './components/Gameboard.tsx';
 
 interface AttributeCount {
   flaggedCount: number;
@@ -8,7 +8,7 @@ interface AttributeCount {
   hiddenCount: number;
 }
 type GameResult = 'loss' | 'win' | '';
-export interface BoardContextInterface {
+export interface GameboardContextInterface {
   gameId: number;
   attributeCount: AttributeCount;
   setAttributeCount: Dispatch<React.SetStateAction<AttributeCount>>;
@@ -19,9 +19,9 @@ export interface BoardContextInterface {
   mines: number;
   setCurrentMines: Dispatch<React.SetStateAction<number>>;
 }
-export const BoardContext = createContext<BoardContextInterface | undefined>(
-  undefined,
-);
+export const GameboardContext = createContext<
+  GameboardContextInterface | undefined
+>(undefined);
 
 const App: React.FC = () => {
   const [gameId, setGameId] = useState(1);
@@ -40,15 +40,20 @@ const App: React.FC = () => {
   const [currentMines, setCurrentMines] = useState(10);
 
   const handleColumnsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCols(parseInt(e.target.value));
+    const newCols = parseInt(e.target.value);
+    setCols(newCols);
+    setMines(Math.round((newCols * rows) / 10));
   };
 
   const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRows(parseInt(e.target.value));
+    const newRows = parseInt(e.target.value);
+    setRows(newRows);
+    setMines(Math.round((newRows * cols) / 10));
   };
 
   const handleMinesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMines(parseInt(e.target.value));
+    const newMines = parseInt(e.target.value);
+    setMines(newMines);
   };
 
   const handleNewGameClick = (e: React.FormEvent) => {
@@ -64,14 +69,17 @@ const App: React.FC = () => {
   };
 
   let endMessage = '';
+  let gameResultCSSString = 'game-result';
   if (gameResult === 'loss') {
     endMessage = 'You Lost!';
+    gameResultCSSString += ' game-lost';
   } else if (gameResult === 'win') {
     endMessage = 'You Won!';
+    gameResultCSSString += ' game-won';
   }
 
   return (
-    <BoardContext.Provider
+    <GameboardContext.Provider
       value={{
         gameId,
         attributeCount,
@@ -90,7 +98,6 @@ const App: React.FC = () => {
           Game ID: {gameId}
           <br />
           Remaining Unflagged Mines:{' '}
-          {/* TODO: store initial mine count for this */}
           {currentMines - attributeCount.flaggedCount >= 0
             ? currentMines - attributeCount.flaggedCount
             : 0}
@@ -102,7 +109,7 @@ const App: React.FC = () => {
               name="columns"
               className="columns"
               onChange={handleColumnsChange}
-              value={cols}
+              value={cols ? cols : 0}
             />
 
             <span className="rows">Rows:</span>
@@ -111,7 +118,7 @@ const App: React.FC = () => {
               name="rows"
               className="rows"
               onChange={handleRowsChange}
-              value={rows}
+              value={rows ? rows : 0}
             />
 
             <span className="mines">Mines:</span>
@@ -120,20 +127,17 @@ const App: React.FC = () => {
               name="mines"
               className="mines-input"
               onChange={handleMinesChange}
-              value={mines}
+              value={mines ? mines : 0}
             />
 
             <button type="submit">New Game</button>
           </form>
-          <span className="game-result">{endMessage}</span>
-          {gameResult !== '' ? (
-            <button onClick={handleNewGameClick}>Restart</button>
-          ) : null}
+          <span className={gameResultCSSString}>{endMessage}</span>
         </div>
-        <Board />
+        <Gameboard />
         <br />
       </div>
-    </BoardContext.Provider>
+    </GameboardContext.Provider>
   );
 };
 
