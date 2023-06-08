@@ -69,7 +69,6 @@ const Gameboard = () => {
     rows,
     cols,
     mines,
-    setCurrentMines,
   } = useContext(GameboardContext) as GameboardContextInterface;
 
   const [board, setBoard] = useState<Board>([]);
@@ -78,7 +77,7 @@ const Gameboard = () => {
   const randInRange = (min: number, max: number) => {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min);
+    return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
   const generateEmptyBoard = useCallback(
@@ -98,7 +97,6 @@ const Gameboard = () => {
 
   const placeMines = useCallback(
     (rows: number, cols: number, mines: number, board: Board) => {
-      setCurrentMines(mines);
       const updatedBoard = board;
 
       while (mines > 0) {
@@ -113,25 +111,22 @@ const Gameboard = () => {
 
       return updatedBoard;
     },
-    [setCurrentMines],
+    [],
   );
 
-  const buildBoard = useCallback(
-    (rows: number, cols: number, mines: number) => {
-      const emptyBoard = generateEmptyBoard(rows, cols);
+  const buildBoard = useCallback(() => {
+    const emptyBoard = generateEmptyBoard(rows, cols);
 
-      const minedBoard = placeMines(rows, cols, mines, emptyBoard);
+    const minedBoard = placeMines(rows, cols, mines, emptyBoard);
 
-      minedBoard.forEach((row: Array<cell>) => {
-        row.forEach((cell) => {
-          cell.queryNeighbors(minedBoard);
-        });
+    minedBoard.forEach((row: Array<cell>) => {
+      row.forEach((cell) => {
+        cell.queryNeighbors(minedBoard);
       });
+    });
 
-      setBoard(minedBoard);
-    },
-    [generateEmptyBoard, placeMines],
-  );
+    setBoard(minedBoard);
+  }, [generateEmptyBoard, placeMines, rows, cols, mines]);
 
   const countAttributes = (board: Board) => {
     let flaggedCount = 0;
@@ -224,7 +219,6 @@ const Gameboard = () => {
   };
 
   const handleLeftClick = (e: React.MouseEvent, cell: cell) => {
-    // console.log('left click on:', cell);
     e.preventDefault();
 
     // Don't do anything if game is over
@@ -244,11 +238,15 @@ const Gameboard = () => {
   };
 
   const handleRightClick = (e: React.MouseEvent, cell: cell) => {
-    // console.log('right click on:', cell);
     e.preventDefault();
 
     // Don't do anything if game is over
     if (gameResult !== '') {
+      return;
+    }
+
+    // Don't allow flagging an already-revealed cell
+    if (cell.revealed) {
       return;
     }
 
@@ -260,8 +258,8 @@ const Gameboard = () => {
 
   // Build a new board when the gameId changes
   useEffect(() => {
-    buildBoard(rows, cols, mines);
-  }, [gameId, buildBoard, rows, cols, mines]);
+    buildBoard();
+  }, [gameId, buildBoard]);
 
   let boardCSSClassString = 'board';
   if (gameResult !== '') {

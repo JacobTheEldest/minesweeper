@@ -7,6 +7,7 @@ interface AttributeCount {
   revealedCount: number;
   hiddenCount: number;
 }
+type numericalInput = number | '';
 type GameResult = 'loss' | 'win' | '';
 export interface GameboardContextInterface {
   gameId: number;
@@ -17,7 +18,6 @@ export interface GameboardContextInterface {
   rows: number;
   cols: number;
   mines: number;
-  setCurrentMines: Dispatch<React.SetStateAction<number>>;
 }
 export const GameboardContext = createContext<
   GameboardContextInterface | undefined
@@ -37,27 +37,64 @@ const App: React.FC = () => {
   const [rows, setRows] = useState(10);
   const [cols, setCols] = useState(10);
   const [mines, setMines] = useState(10);
-  const [currentMines, setCurrentMines] = useState(10);
+  const [nextRows, setNextRows] = useState<numericalInput>(10);
+  const [nextCols, setNextCols] = useState<numericalInput>(10);
+  const [nextMines, setNextMines] = useState<numericalInput>(10);
 
   const handleColumnsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newCols = parseInt(e.target.value);
-    setCols(newCols);
-    setMines(Math.round((newCols * rows) / 10));
+    const colsInputValue = parseInt(e.target.value);
+    if (isNaN(colsInputValue)) {
+      setNextCols('');
+      setNextMines(Math.round((cols * rows) / 10));
+    } else {
+      setNextCols(colsInputValue);
+      setNextMines(Math.round((colsInputValue * rows) / 10));
+    }
   };
 
   const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newRows = parseInt(e.target.value);
-    setRows(newRows);
-    setMines(Math.round((newRows * cols) / 10));
+    const rowsInputValue = parseInt(e.target.value);
+    if (isNaN(rowsInputValue)) {
+      setNextRows('');
+      setNextMines(Math.round((cols * rows) / 10));
+    } else {
+      setNextRows(rowsInputValue);
+      setNextMines(Math.round((rowsInputValue * cols) / 10));
+    }
   };
 
   const handleMinesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newMines = parseInt(e.target.value);
-    setMines(newMines);
+    const minesInputValue = parseInt(e.target.value);
+    if (isNaN(minesInputValue)) {
+      setNextMines('');
+    } else {
+      setNextMines(minesInputValue);
+    }
   };
 
   const handleNewGameClick = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (typeof nextRows === 'number' && nextRows > 0) {
+      setRows(nextRows);
+    } else {
+      setNextRows(rows);
+    }
+    if (typeof nextCols === 'number' && nextCols > 0) {
+      setCols(nextCols);
+    } else {
+      setNextCols(cols);
+    }
+    if (
+      typeof nextMines === 'number' &&
+      nextMines > 0 &&
+      nextMines < rows * cols
+    ) {
+      setMines(nextMines);
+    } else {
+      setNextMines(mines);
+    }
+
     setGameResult('');
     setGameId(gameId + 1);
 
@@ -89,7 +126,6 @@ const App: React.FC = () => {
         rows,
         cols,
         mines,
-        setCurrentMines,
       }}
     >
       <div className="">
@@ -98,8 +134,8 @@ const App: React.FC = () => {
           Game ID: {gameId}
           <br />
           Remaining Unflagged Mines:{' '}
-          {currentMines - attributeCount.flaggedCount >= 0
-            ? currentMines - attributeCount.flaggedCount
+          {mines - attributeCount.flaggedCount >= 0
+            ? mines - attributeCount.flaggedCount
             : 0}
           <br />
           <form className="game-difficulty" onSubmit={handleNewGameClick}>
@@ -109,7 +145,7 @@ const App: React.FC = () => {
               name="columns"
               className="columns"
               onChange={handleColumnsChange}
-              value={cols ? cols : 0}
+              value={nextCols}
             />
 
             <span className="rows">Rows:</span>
@@ -118,7 +154,7 @@ const App: React.FC = () => {
               name="rows"
               className="rows"
               onChange={handleRowsChange}
-              value={rows ? rows : 0}
+              value={nextRows}
             />
 
             <span className="mines">Mines:</span>
@@ -127,7 +163,7 @@ const App: React.FC = () => {
               name="mines"
               className="mines-input"
               onChange={handleMinesChange}
-              value={mines ? mines : 0}
+              value={nextMines}
             />
 
             <button type="submit">New Game</button>
