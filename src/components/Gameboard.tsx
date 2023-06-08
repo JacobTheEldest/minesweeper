@@ -252,6 +252,11 @@ const Gameboard = () => {
       return;
     }
 
+    // Don't allow flagging an already-revealed cell
+    if (cell.revealed) {
+      return;
+    }
+
     cell.toggleFlagged();
     countAttributes(board);
 
