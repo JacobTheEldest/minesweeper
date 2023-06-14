@@ -4,6 +4,10 @@
 # skip if in CI. https://typicode.github.io/husky/guide.html#with-env-variables
 [ -n "$CI" ] && exit 0
 
+npm run format
+
+npm run lint
+
 npm run test run
 npm run test:e2e
 
