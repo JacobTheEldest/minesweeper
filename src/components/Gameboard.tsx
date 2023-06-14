@@ -231,6 +231,7 @@ const Gameboard = () => {
       countAttributes(board);
       if (cell.mined) {
         setGameResult('loss');
+        board.flat().forEach((cell) => cell.setRevealed())
       }
     }
 
