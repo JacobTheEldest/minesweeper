@@ -96,20 +96,18 @@ const Gameboard = () => {
   );
 
   const placeMines = useCallback(
-    (rows: number, cols: number, mines: number, board: Board) => {
-      const updatedBoard = board;
+    (mineCount: number, board: Board) => {
+      const unminedCells = board.flat();
 
-      while (mines > 0) {
-        const randRow = randInRange(0, rows - 1);
-        const randCol = randInRange(0, cols - 1);
+      while (mineCount > 0) {
+        const unminedIndex = randInRange(0, unminedCells.length - 1);
 
-        if (!updatedBoard[randRow][randCol].mine) {
-          updatedBoard[randRow][randCol].setMined();
-          mines--;
-        }
+        unminedCells[unminedIndex].setMined();
+        unminedCells.splice(unminedIndex, 1);
+        mineCount--;
       }
 
-      return updatedBoard;
+      return board;
     },
     [],
   );
@@ -117,7 +115,7 @@ const Gameboard = () => {
   const buildBoard = useCallback(() => {
     const emptyBoard = generateEmptyBoard(rows, cols);
 
-    const minedBoard = placeMines(rows, cols, mines, emptyBoard);
+    const minedBoard = placeMines(mines, emptyBoard);
 
     minedBoard.forEach((row: Array<cell>) => {
       row.forEach((cell) => {
