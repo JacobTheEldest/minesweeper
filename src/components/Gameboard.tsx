@@ -9,7 +9,7 @@ class cell {
   col: number;
   flagged: boolean;
   revealed: boolean;
-  mine: boolean;
+  mined: boolean;
   neighbors: cell[];
   adjacentMines: number;
 
@@ -18,7 +18,7 @@ class cell {
     this.col = col;
     this.flagged = false;
     this.revealed = false;
-    this.mine = false;
+    this.mined = false;
     this.neighbors = [];
     this.adjacentMines = 0;
   }
@@ -32,7 +32,7 @@ class cell {
   };
 
   setMined = () => {
-    this.mine = true;
+    this.mined = true;
   };
 
   queryNeighbors = (board: Board) => {
@@ -50,7 +50,7 @@ class cell {
     neighborRows.forEach((row) => {
       neighborCols.forEach((col) => {
         if (!(col === this.col && row === this.row)) {
-          if (board[row][col].mine) {
+          if (board[row][col].mined) {
             this.adjacentMines++;
           }
           this.neighbors.push(board[row][col]);
@@ -198,7 +198,7 @@ const Gameboard = () => {
         cssClassString += ' flagged';
         cellIcon = '🚩';
       }
-    } else if (cell.mine) {
+    } else if (cell.mined) {
       cssClassString += ' mine';
       cellIcon = '💣';
     } else {
@@ -229,7 +229,7 @@ const Gameboard = () => {
     if (!cell.flagged) {
       revealCells(cell);
       countAttributes(board);
-      if (cell.mine) {
+      if (cell.mined) {
         setGameResult('loss');
       }
     }
