@@ -5,6 +5,7 @@
   "[javascript, typescript, typescriptreact, json, jsonc, css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "prettier.prettierPath": "./node_modules/prettier",
 
   "eslint.experimental.useFlatConfig": true,
   "editor.codeActionsOnSave": {

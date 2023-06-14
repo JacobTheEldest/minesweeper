@@ -95,22 +95,19 @@ const Gameboard = () => {
     [],
   );
 
-  const placeMines = useCallback(
-    (mineCount: number, board: Board) => {
-      const unminedCells = board.flat();
+  const placeMines = useCallback((mineCount: number, board: Board) => {
+    const unminedCells = board.flat();
 
-      while (mineCount > 0) {
-        const unminedIndex = randInRange(0, unminedCells.length - 1);
+    while (mineCount > 0) {
+      const unminedIndex = randInRange(0, unminedCells.length - 1);
 
-        unminedCells[unminedIndex].setMined();
-        unminedCells.splice(unminedIndex, 1);
-        mineCount--;
-      }
+      unminedCells[unminedIndex].setMined();
+      unminedCells.splice(unminedIndex, 1);
+      mineCount--;
+    }
 
-      return board;
-    },
-    [],
-  );
+    return board;
+  }, []);
 
   const buildBoard = useCallback(() => {
     const emptyBoard = generateEmptyBoard(rows, cols);
@@ -229,7 +226,7 @@ const Gameboard = () => {
       countAttributes(board);
       if (cell.mined) {
         setGameResult('loss');
-        board.flat().forEach((cell) => cell.setRevealed())
+        board.flat().forEach((cell) => cell.setRevealed());
       }
     }
 
